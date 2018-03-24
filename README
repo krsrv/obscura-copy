@@ -1,0 +1,2 @@
+Change key in config/app.php
+Download composer and run "php composer.phar require doctrine/dbal"
