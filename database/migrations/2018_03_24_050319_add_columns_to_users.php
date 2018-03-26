@@ -15,7 +15,7 @@ class AddColumnsToUsers extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('uid')->nullable();
             $table->string('user_access_token')->nullable();
-            $table->string('user_remember_token')->nullable();
+            $table->string('remember_token')->nullable();
             $table->integer('level')->default(1);
             $table->string('signup_type')->nullable();
             $table->string('answerTime')->nullable();

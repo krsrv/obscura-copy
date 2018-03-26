@@ -349,8 +349,7 @@ public function obscura()
  {
     if(Auth::check())
         {
-            
-            return Redirect::to("/dashboard")->with('message','You are all-ready logged in');
+            return Redirect::to("/dashboard")->with('message','You are already logged in');
         }
  	return view('register');
  }
@@ -360,16 +359,14 @@ public function obscura()
 
  	$validator=Validator::make($newUserData=Input::all(),Users::$rulesSignup);
  	if($validator->fails())
-		{
-
-			return Redirect::back()->withErrors($validator)->withInput(Input::except('password','email'));
-		}
+	{
+		return Redirect::back()->withErrors($validator)->withInput(Input::except('password'));
+	}
 	else
 	{
-			
-				$newUserData['password'] = Hash::make(Input::get('password'));
-	  			Users::create($newUserData);
-	  			return Redirect::to('/login')->with('message','Registered Successfully');
+		$newUserData['password'] = Hash::make(Input::get('password'));
+		Users::create($newUserData);
+		return Redirect::to('/login')->with('message','Registered Successfully');
 	}
  }
  public function postfbgoogle()
@@ -463,11 +460,7 @@ public function getCerdentials()
 
 public function logout()
 	{
-        if(Users::getUserCurrLevel(Auth::id()) == 6)
-        {
-            Users::updateLevel(6);
-        }
-		Auth::logout();
+        Auth::logout();
 		Session::flush();
     	return Redirect::to("/login")->with('message','Successfully you are logged-out');
 	}
