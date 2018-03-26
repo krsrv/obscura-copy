@@ -14,26 +14,33 @@
         <div class="section">
           <div class="container">
             <div class="row center">
-              <div class="col s12 level-number white-text left-align offset-s1"><h5>Level 0</h5></div>
+              <div class="col s12 level-number white-text left-align offset-s1"><h5>Level {{$levelNumber}}</h5></div>
               <div class="level-content col s12">
                 <div class="level-image-container">
-                  <img class="level-image" src="/images/7.jpg" />
+                  <?php
+                    echo '<img class="level-image" src="/images/'.$levelNumber.'.jpg"/>'
+                  ?>
                 </div>
               </div> 
 
                <form method="post" action="/checkAnswer"> 
-                @if(Session::has('message'))
-                <div class="row answer-message " >
-                  <div class="left-align col s10 offset-s2 white-text">
-                      {{Session::get('message')}}
-                  </div>
-                </div>
-                @endif
+                
+                <?php
+                if(isset($message)){
+                  echo '<div class="row answer-message " >';
+                  echo '<div class="left-align col s10 offset-s2 white-text">';
+                  echo $message;
+                  echo '</div> </div>';
+                }
+                ?>
+                
                 <div class="row">
 
                   <div class="col s6 offset-s2 input-field">
                     <input type="text" class="validate answer-box" id="answer" placeholder="Answer" name="answer">
-                    <input type="hidden" value="1" name="presentId">
+                    <?php 
+                      echo '<input type=hidden value="'.$levelNumber.'" name="presentId">';
+                    ?>
                   </div>
                   
                   <div class="col s3">

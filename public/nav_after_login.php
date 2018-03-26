@@ -39,7 +39,7 @@ $maxLevel = Users::getUserCurrLevel(Auth::id());
 								echo "<li><a href='/congo'>Level"."$i"."</a></li>";
 							}
 							else
-							 echo "<li><a href='/level".$i."''>Level"."$i"."</a></li>";
+							 echo "<li><a href='/level/".$i."''>Level"."$i"."</a></li>";
 						}
 					?>
 					  	
