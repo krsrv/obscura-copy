@@ -28,7 +28,7 @@ $maxLevel = Users::getUserCurrLevel(Auth::id());
 					<ul id='levels' class='dropdown-content'>
 					<?php
 						$i = 0;
-						for($i = 0;$i <=$maxLevel; $i++)
+						for($i = $maxLevel;$i >= 0; $i--)
 						{
 							if($i == 31)
 							{

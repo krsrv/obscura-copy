@@ -12,7 +12,9 @@
 						 <div class="col s3"><a href="http://gawds.in" target="_blank"><img src="/images/gawds.svg" type="image/svg+xml" class="Link" id="GAWDSLink" width="90px" height="44px" style="margin-left: 12px; padding-bottom: 10px; z-index: -1"></img></a></div>
 					</div>
 
-						<p class="credits-footer" style="text-align: center"><a href="/credits" target="_blank">Credits</a></p>	
+					<!--
+					<p class="credits-footer" style="text-align: center"><a href="/credits" target="_blank">Credits</a></p>	
+				-->
 
 
 				</div>
