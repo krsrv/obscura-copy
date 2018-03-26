@@ -16,7 +16,7 @@ class AddColumnsToUsers extends Migration
             $table->string('uid')->nullable();
             $table->string('user_access_token')->nullable();
             $table->string('user_remember_token')->nullable();
-            $table->integer('level')->default(0);
+            $table->integer('level')->default(1);
             $table->string('signup_type')->nullable();
             $table->string('answerTime')->nullable();
         });

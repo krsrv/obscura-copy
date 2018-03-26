@@ -463,7 +463,7 @@ public function getCerdentials()
 
 public function logout()
 	{
-        if(Users::getUserMaxLevel(Auth::id()) == 6)
+        if(Users::getUserCurrLevel(Auth::id()) == 6)
         {
             Users::updateLevel(6);
         }
@@ -483,32 +483,28 @@ public function logout()
  }*/
  public function start()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
- 	$presentLevelName = Levels::getLevelName($userMaxId);
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+ 	$presentLevelName = Levels::getLevelName($userMaxLevel);
  	return Redirect::to($presentLevelName[0]->levelName);
  }
 
  public function checkAnswer()
  {	
-
  	$presentId = Input::get('presentId');
-    $userMaxId = Users::getUserMaxId(Auth::id());
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
  	$userAnswer = Input::get('answer');
- 	$correctAnswer1 = Answer::getAnswer($presentId,'answer1');
- 	$correctAnswer2 = Answer::getAnswer($presentId,'answer2');
- 	if(($userAnswer == $correctAnswer1) || ($userAnswer == $correctAnswer2))
+    $correctAnswer1 = Answer::getAnswer($presentId,'answer1');
+    if($userAnswer == $correctAnswer1)
  	{
-        if($userMaxId == $presentId){
-        Users::updateId($userMaxId);
-        $userMaxId = Users::getUserMaxId(Auth::id());
-        $userMaxLevel = Users::getMaxLevel($userMaxId);
-        Users::updateUserLevel($userMaxLevel);
-    }
-
-        $presentId = $presentId + 1;
+        print('Users Max Id - '.$userMaxLevel);
+        print(' Level ID - '.$presentId);
+        if($userMaxLevel <= $presentId - 1){
+            Users::updateLevel($userMaxLevel);
+            $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+        }
        // Session::put('presentLevel',$presentLevel);
- 		$presentLevelName = Levels::getLevelName($presentId);
-        return Redirect::to($presentLevelName[0]->levelName);
+        $nextLevelName = Levels::getLevelName($presentId + 1);
+        return Redirect::to($nextLevelName[0]->levelName)->with('message', 'Next level');
  	}
  	else
  	{
@@ -518,10 +514,9 @@ public function logout()
 
  public function level0()
  {
-    
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 1)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 0)
     {
         return view('level0');
     }
@@ -534,19 +529,9 @@ public function logout()
 
   public function level1()
  {
-	$userMaxId = Users::getUserMaxId(Auth::id());
-    if($userMaxId == 1)
-    {
-        Users::updateId($userMaxId);
-        $userMaxId = Users::getUserMaxId(Auth::id());
-        $userMaxLevel = Users::getMaxLevel($userMaxId);
-        Users::updateUserLevel($userMaxLevel);
-        return view('level1');
-
-    }
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 2)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 1)
     {
         return view('level1');
     }
@@ -559,9 +544,9 @@ public function logout()
 
   public function level2()
  {
-	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 3)
+	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 2)
     {
         return view('level2');
     }
@@ -574,9 +559,9 @@ public function logout()
 
   public function level3()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 4)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 3)
     {
         return view('level3');
     }
@@ -589,19 +574,19 @@ public function logout()
 
   public function level4()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    if($userMaxId == 4 && Input::get('key') == 50)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    if($userMaxLevel == 4 && Input::get('key') == 50)
     {
-        Users::updateId($userMaxId);
-        $userMaxId = Users::getUserMaxId(Auth::id());
-        $userMaxLevel = Users::getMaxLevel($userMaxId);
-        Users::updateUserLevel($userMaxLevel);
+        Users::updateLevel($userMaxLevel);
+        $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+        $userMaxLevel = Users::getMaxLevel($userMaxLevel);
+        Users::updateLevel($userMaxLevel);
         return view('level4');
 
     }
-    $presentLevelId = Levels::getLevelName($userMaxId);
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 5)
+    $presentLevelId = Levels::getLevelName($userMaxLevel);
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 4)
     {
         return view('level4');
     }
@@ -612,9 +597,9 @@ public function logout()
  }
   public function level6()
  {
-   $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 7)
+   $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 6)
     {
         return view('level6');
     }
@@ -625,9 +610,9 @@ public function logout()
  }
 public function level6_1()
  {
-   $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 8)
+   $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 7)
     {
         return view('level6_1');
     }
@@ -639,9 +624,9 @@ public function level6_1()
 
   public function level5()
  {
-	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 6)
+	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 5)
     {
         return view('level5');
     }
@@ -656,9 +641,9 @@ public function level6_1()
 
   public function level7()
  {
-	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 9)
+	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 8)
     {
         return view('level7');
     }
@@ -671,9 +656,9 @@ public function level6_1()
 
   public function level8()
  {
-	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 9)
     {
         return view('level8');
     }
@@ -683,9 +668,9 @@ public function level6_1()
     } 
  }
  public function level8_lol123() { 
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_lol123');
     }
@@ -696,9 +681,9 @@ public function level6_1()
  }
 
  public function level8_obsda() { 
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_obsda');
     }
@@ -710,9 +695,9 @@ public function level6_1()
 
  public function level8_delhi() {
      
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_delhi');
     }
@@ -723,9 +708,9 @@ public function level6_1()
  }
 
  public function level8_sup1_() {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_sup1_');
     }
@@ -736,9 +721,9 @@ public function level6_1()
  }
 
  public function level8_alpha() {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_alpha');
     }
@@ -750,9 +735,9 @@ public function level6_1()
  
 
  public function level8_roger() {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_roger');
     }
@@ -763,9 +748,9 @@ public function level6_1()
  }
 
  public function level8_hahaha() {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_hahaha');
     }
@@ -776,9 +761,9 @@ public function level6_1()
  }
 
  public function level8_stairs() {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_stairs');
     }
@@ -789,9 +774,9 @@ public function level6_1()
  }
 
  public function level8_zozozo() {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 10)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 10)
     {
         return view('level8_zozozo');
     }
@@ -806,22 +791,22 @@ public function level6_1()
  
  public function level9()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
     $Id = Input::get('id');
     if($Id == Auth::id())
     {
-        if($userMaxId == 10)
+        if($userMaxLevel == 10)
         {
-        Users::updateId($userMaxId);
-        $userMaxId = Users::getUserMaxId(Auth::id());
-        $userMaxLevel = Users::getMaxLevel($userMaxId);
-        Users::updateUserLevel($userMaxLevel);
+        Users::updateLevel($userMaxLevel);
+        $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+        $userMaxLevel = Users::getMaxLevel($userMaxLevel);
+        Users::updateLevel($userMaxLevel);
         }
         
     }
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 11)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 11)
     {
         return view('level9');
     }
@@ -833,9 +818,9 @@ public function level6_1()
 
  public function level10()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 12)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 12)
     {
         return view('level10');
     }
@@ -847,9 +832,9 @@ public function level6_1()
 
  public function level11()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 13)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 13)
     {
         return view('level11');
     }
@@ -861,9 +846,9 @@ public function level6_1()
 
  public function level12()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 14)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 14)
     {
         return view('level12');
     }
@@ -875,9 +860,9 @@ public function level6_1()
 
  public function level13()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 15)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 15)
     {
         return view('level13');
     }
@@ -889,9 +874,9 @@ public function level6_1()
 
  public function level14()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 16)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 16)
     {
         return view('level14');
     }
@@ -903,9 +888,9 @@ public function level6_1()
 
  public function level15()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 17)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 17)
     {
         return view('level15');
     }
@@ -917,9 +902,9 @@ public function level6_1()
 
  public function level16()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 18)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 18)
     {
         return view('level16');
     }
@@ -931,9 +916,9 @@ public function level6_1()
 
  public function level17()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 19)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 19)
     {
         return view('level17');
     }
@@ -945,22 +930,22 @@ public function level6_1()
 
  public function level18()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
     
     if(Input::get('key') == Auth::id())
     {
-        if($userMaxId == 19)
+        if($userMaxLevel == 19)
         {
-        Users::updateId($userMaxId);
-        $userMaxId = Users::getUserMaxId(Auth::id());
-        $userMaxLevel = Users::getMaxLevel($userMaxId);
-        Users::updateUserLevel($userMaxLevel);
+        Users::updateLevel($userMaxLevel);
+        $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+        $userMaxLevel = Users::getMaxLevel($userMaxLevel);
+        Users::updateLevel($userMaxLevel);
         }
         
     }
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 20)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 20)
     {
         return view('level18');
     }
@@ -972,9 +957,9 @@ public function level6_1()
 
  public function level19()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 21)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 21)
     {
         return view('level19');
     }
@@ -986,9 +971,9 @@ public function level6_1()
 
  public function level20()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 22)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 22)
     {
         return view('level20');
     }
@@ -1000,9 +985,9 @@ public function level6_1()
 
  public function level21()
  {
- 	$userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 23)
+ 	$userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 23)
     {
         return view('level21');
     }
@@ -1013,9 +998,9 @@ public function level6_1()
  }
  public function level21_1()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 24)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 24)
     {
         return view('level21_1');
     }
@@ -1027,9 +1012,9 @@ public function level6_1()
  public function level22()
  {
     
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 25)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 25)
     {
         return view('level22');
     }
@@ -1038,173 +1023,11 @@ public function level6_1()
         return Redirect::to($userMaxLevelName[0]->levelName)->with('message','First Complete This Level!');
     } 
  }
-  public function gsh()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 0)
-    {
-        
-        if($levelx == 0)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('gsh');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function dd1()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 1)
-    {
-        
-        if($levelx == 1)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('dd1');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function harry_cccsweg()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 2)
-    {
-        
-        if($levelx == 2)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('harry_cccsweg');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function lovecgood()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 3)
-    {
-        
-        if($levelx == 3)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('lovecgood');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function wwwnewfinal1()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 4)
-    {
-        
-        if($levelx == 4)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('wwwnewfinal1');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function hutfinal()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 5)
-    {
-        
-        if($levelx == 5)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('hutfinal');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function dsa()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 6)
-    {
-        
-        if($levelx == 6)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('dsa');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function divfinal()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 7)
-    {
-       
-        if($levelx == 7)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('divfinal');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-  public function wall()
-  {
-    $levelx = Users::getLevelxUser(Auth::id());
-    if($levelx >= 8)
-    {
-        
-        if($levelx == 8)
-        {
-            $levelx = $levelx + 1;
-            Users::updateLevelx(Auth::id(),$levelx);
-        }
-        return view('wall');
-    }
-    else
-    {
-        return Redirect::back()->with('message','First Complete This Level');
-    }
-  }
-public function level22_1()
+ public function level22_1()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 26)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 26)
     {
         return view('level22_1');
     }
@@ -1215,9 +1038,9 @@ public function level22_1()
  }
  public function level23()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 27)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 27)
     {
         return view('level23');
     }
@@ -1228,9 +1051,9 @@ public function level22_1()
  }
  public function level24()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 28)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 28)
     {
         return view('level24');
     }
@@ -1241,9 +1064,9 @@ public function level22_1()
  }
   public function level24_1()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 29)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 29)
     {
         return view('level24_1');
     }
@@ -1254,9 +1077,9 @@ public function level22_1()
  }
   public function level25()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 30)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 30)
     {
         return view('level25');
     }
@@ -1267,9 +1090,9 @@ public function level22_1()
  }
  public function level26()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 31)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 31)
     {
         return view('level26');
     }
@@ -1280,9 +1103,9 @@ public function level22_1()
  }
   public function level27()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 32)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 32)
     {
         return view('level27');
     }
@@ -1293,9 +1116,9 @@ public function level22_1()
  }
   public function level28()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 33)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 33)
     {
         return view('level28');
     }
@@ -1306,9 +1129,9 @@ public function level22_1()
  }
   public function level29()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 34)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 34)
     {
         return view('level29');
     }
@@ -1319,9 +1142,9 @@ public function level22_1()
  }
   public function level30()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 35)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 35)
     {
         return view('level30');
     }
@@ -1332,9 +1155,9 @@ public function level22_1()
  }
  public function shiftone()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 36)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 36)
     {
         return view('shiftone');
     }
@@ -1346,9 +1169,9 @@ public function level22_1()
 
 public function congo()
  {
-    $userMaxId = Users::getUserMaxId(Auth::id());
-    $userMaxLevelName = Levels::getLevelName($userMaxId);
-    if($userMaxId >= 37)
+    $userMaxLevel = Users::getUserCurrLevel(Auth::id());
+    $userMaxLevelName = Levels::getLevelName($userMaxLevel);
+    if($userMaxLevel >= 37)
     {
         return view('congo');
     }

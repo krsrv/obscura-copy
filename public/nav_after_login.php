@@ -1,6 +1,6 @@
 <?php
 use App\Users;
-$maxLevel = Users::getUserMaxLevel(Auth::id());
+$maxLevel = Users::getUserCurrLevel(Auth::id());
 ?>
 
 <div class="navbar-fixed">

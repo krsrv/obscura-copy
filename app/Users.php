@@ -8,26 +8,31 @@ class Users extends Model
 {
 	protected $table="users";
 	protected $primaryKey = 'user_id';
-	protected $fillable = ['first_name','last_name','email','uid','mobno','password','user_access_token','user_remember_token','college','level','signup_type'];
+	protected $fillable = [
+		'first_name', 'last_name',
+		'email', 'uid',
+		'mobno', 'password',
+		'user_access_token', 'user_remember_token',
+		'college', 'level', 'signup_type'];
 
 	public static $rulesSignup=array(
-		'email'=>'required|unique:users,email',
-		'password'=>'required|confirmed|min:6',
+		'email' => 'required|unique:users,email',
+		'password' => 'required|confirmed|min:6',
 		'college' => 'required',
 		'first_name' => 'required',
 		'last_name'  => 'required',
 		'mobno' => 'required|min:10',
 	);
 	public static $rules_login=[
-		'email'=>'required',
-		'password'=>'required',
+		'email' => 'required',
+		'password' => 'required',
 	];
 
 	public static $rulesfbgoole=array(
 		'mobno' => 'required|min:10',
 		'college' => 'required',
-		'email'=>'required|unique:users,email',
-		'password'=>'required|confirmed|min:6',
+		'email' => 'required|unique:users,email',
+		'password' => 'required|confirmed|min:6',
 	);
 
 	public static function getData($id)
@@ -52,30 +57,14 @@ class Users extends Model
             ->where('user_id', $userId)
             ->update(['college' => $college]);
 	}
-	public static function getLevel($id)
-	{
-		return DB::table('users')->where('user_id',$id)->pluck('id');
-	}
-	public static function getUserMaxId($userId)
+	public static function getUserCurrLevel($userId)
 	{
 		return DB::table('users')->where('user_id',$userId)->pluck('level');
-	}
-
-	public static function updateId($userMaxId)
-	{
-		DB::table('users')
-            ->where('user_id', Auth::id())
-            ->update(array('answerTime' => time()));
-		DB::table('users')
-            ->where('user_id', Auth::id())
-            ->update(array('level_id' => $userMaxId+1));
 	}
 	public static function leaderboard()
 	{
 		return DB::select('SELECT first_name,level,college,last_name FROM users ORDER BY level DESC,answerTime LIMIT 0, 2000');
 	}
-
-
 	public static function getUser()
     {
         return DB::select('select * from ticker');
@@ -84,37 +73,24 @@ class Users extends Model
 	{
 		return DB::table('ticker')->where('id','1')->pluck('message');
 	}
-
-	public static function getLevelxUser($userId)
-	{
-		return DB::table('users')->where('user_id',$userId)->pluck('levelx');
-	}
-	public static function updateLevelx($userId,$levelx)
-	{
-		return DB::table('users')
-            ->where('user_id', $userId)
-            ->update(['levelx' => $levelx]);
-	}
 	public static function getHintSource($level)
 	{
 		return DB::table('hints')->where('level',$level)->pluck('hints');
 	}
 	public static function getMaxLevel($userMaxId)
 	{
-		return DB::table('levels')->where('id',$userMaxId)->pluck('level');
+		return DB::table('users')->where('id',$userMaxId)->pluck('level');
 
 	}
-	public static function getUserMaxLevel($userId)
-	{
-		return DB::table('users')->where('user_id',$userId)->pluck('level');
-
-	}
-	public static function updateUserLevel($userMaxLevel)
+	public static function updateLevel($userMaxLevel)
 	{
 		DB::table('users')
             ->where('user_id', Auth::id())
-            ->update(array('level' => $userMaxLevel));
-	}
+            ->update(array(
+            	'level' => $userMaxLevel + 1,
+            	'answerTime' => time()
+            ));
+    }
 	public static function getFeedback($userId)
 	{
 		return DB::table('users')->where('user_id',$userId)->pluck('feedback');
